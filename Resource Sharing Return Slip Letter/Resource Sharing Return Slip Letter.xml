@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:include href="header.xsl"/>
+	<xsl:include href="senderReceiver.xsl"/>
+	<xsl:include href="mailReason.xsl"/>
+	<xsl:include href="footer.xsl"/>
+	<xsl:include href="style.xsl"/>
+	<xsl:include href="recordTitle.xsl"/>
+	<xsl:template match="/">
+		<html>
+			<head>
+				<xsl:call-template name="generalStyle"/>
+				<style>
+				    body {
+				    font-family: Arial,sans-serif;
+				    font-size: 14pt;
+				    line-height: 22pt;
+				    color: #000000;
+				    }
+				</style>
+			</head>
+			<body>
+				<xsl:attribute name="style">
+					<xsl:call-template name="bodyStyleCss"/>
+					<!-- style.xsl -->
+				</xsl:attribute>
+				<!--
+				<xsl:call-template name="head"/>
+				-->
+        <p style="font-size:xx-small;color:#383838;text-align:right;">@@letterName@@</p>
+
+<xsl>
+	<table cellspacing="0" cellpadding="5" border="1" width="350" style="float:right;">
+		<tr>
+			<td style="font-size:9px;">
+				<p>Return To:</p>
+				<p style="text-align:center;">
+<xsl:choose>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_BB'">
+        <strong>Baruch College-CUNY</strong><br />
+        151 E 25th St<br />
+        New York, NY 10010-5585<br />
+        <strong>VVB</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_BC'">
+        <strong>Brooklyn College-CUNY</strong><br />
+        2900 Bedford Ave<br />
+        Brooklyn, NY 11210-2889<br />
+        <strong>VDB</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_BM'">
+        <strong>Borough of Manhattan Community College-CUNY</strong><br />
+        199 Chambers St, Rm. S400<br />
+        New York, NY 10007<br />
+        <strong>XMC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_BX'">
+        <strong>Bronx Community College-CUNY</strong><br />
+        2155 University Ave<br />
+        Bronx, NY 10453<br />
+        <strong>VWB</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_CC'">
+        <strong>City College of New York-CUNY</strong><br />
+        160 Convent Ave<br />
+        New York, NY 10031<br />
+        <strong>ZXC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_CL'">
+        <strong>School of Law-CUNY</strong><br />
+        2 Court Sq, 6th Fl.<br />
+        Long Island City, NY 11101<br />
+        <strong>XQL</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_GC'">
+        <strong>Graduate Center-CUNY</strong><br />
+        365 5th Ave<br />
+        New York, NY 10016-4309<br />
+        <strong>ZGM</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_GJ'">
+        <strong>Graduate School of Journalism-CUNY</strong><br />
+        219 W 40th St, 3rd Fl.<br />
+        New York, NY 10018<br />
+        <strong>JOURN</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_HC'">
+        <strong>Hunter College-CUNY</strong><br />
+        695 Park Ave, East Bldg.<br />
+        New York, NY 10065<br />
+        <strong>ZHM</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_HO'">
+        <strong>Hostos Community College-CUNY</strong><br />
+        475 Grand Courcourse, Rm. A207<br />
+        Bronx, NY 10451<br />
+        <strong>ZHC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_JJ'">
+        <strong>John Jay College of Criminal Justice-CUNY</strong><br />
+        524 W 59th St<br />
+        New York, NY 10019<br />
+        <strong>VVJ</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_KB'">
+        <strong>Kingsborough Community College-CUNY</strong><br />
+        2001 Oriental Blvd<br />
+        Brooklyn, NY 11235<br />
+        <strong>YKC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_LE'">
+        <strong>Lehman College-CUNY</strong><br />
+        250 Bedford Park Blvd W<br />
+        Bronx, NY 10468-1589<br />
+        <strong>VYL</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_LG'">
+        <strong>LaGuardia Community College-CUNY</strong><br />
+        31-10 Thomson Ave<br />
+        Long Island City, NY 11101<br />
+        <strong>CTX</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_ME'">
+        <strong>Medgar Evers College-CUNY</strong><br />
+        1650 Bedfrod Ave<br />
+        Brooklyn, NY 11225<br />
+        <strong>XME</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_NC'">
+        <strong>Guttman Community College-CUNY</strong><br />
+        50 W 40th St<br />
+        New York, NY 10018<br />
+        <strong>NYNCC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_NY'">
+        <strong>New York City College of Technology-CUNY</strong><br />
+        300 Jay St, Rm. A539<br />
+        Brooklyn, NY 11201<br />
+        <strong>ZNC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_QB'">
+        <strong>Queensborough Community College-CUNY</strong><br />
+        222-05 56th St<br />
+        Bayside, NY 11364<br />
+        <strong>ZQC</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_QC'">
+        <strong>Queens College-CUNY</strong><br />
+        65-30 Kissena Blvd<br />
+        Flushing, NY 11367-1597<br />
+        <strong>XQM</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_SI'">
+        <strong>College of Staten Island-CUNY</strong><br />
+        2800 Victory Blvd<br />
+        Staten Island, NY 10314-6635<br />
+        <strong>VSI</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+    <xsl:when test="notification_data/organization_unit/code = '01CUNY_YC'">
+        <strong>York College-CUNY</strong><br />
+        94-20 Guy R. Brewer Blvd<br />
+        Jamaica, NY 11451-0001<br />
+        <strong>VMY</strong><br />
+        <strong>Hub: NYC</strong>
+    </xsl:when>
+</xsl:choose>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="font-size:18px;">
+				<p>Ship To:</p>
+				<p style="text-align:center;">
+				<xsl:for-each select="notification_data/partner_address">
+					<strong><xsl:value-of select="line1"/></strong><br />
+					<xsl:value-of select="line2"/><br />
+					<xsl:value-of select="city"/>,&#160;<xsl:value-of select="state_province"/>&#160;<xsl:value-of select="postal_code"/><br />
+					<strong><xsl:value-of select="line3"/></strong><br />
+					<strong><xsl:value-of select="line4"/></strong><br />
+				</xsl:for-each>
+				</p>
+			</td>
+		</tr>
+	</table>
+</xsl>
+				<table width="45%" cellpsacing="5" cellpadding="5" border="0">
+				    <tr>
+				        <td style="font-size:xx-large;">🚚</td>
+				        <td style="font-size:x-large;font-weight:bold;color:#ff0000;">
+							<xsl:value-of select="notification_data/partner_name"/>
+						</td></tr>
+				</table>
+				<p></p>
+				<table width="45%" cellspacing="0" cellpadding="5" border="0">
+					<tr>
+						<td>
+							<strong>@@returned_to@@</strong>:<br />
+							<xsl:value-of select="notification_data/partner_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>@@request_id@@</strong>:<br />
+							<img src="externalId.png" alt="externalId"/>
+						</td>
+					</tr>
+					<xsl:if test="notification_data/request/display/title !=''">
+					<tr>
+						<td>
+							<strong>@@title@@</strong>:<br />
+							<xsl:value-of select="notification_data/request/display/title"/>
+						</td>
+					</tr>
+					</xsl:if>
+					<xsl:if test="notification_data/request/display/journal_title !=''">
+					<tr>
+						<td>
+							<strong>@@journal_title@@</strong>:<br />
+							<xsl:value-of select="notification_data/request/display/journal_title"/>
+						</td>
+					</tr>
+					</xsl:if>
+					<xsl:if test="notification_data/request/display/author != ''">
+					<tr>
+						<td>
+							<strong>@@author@@</strong>:<br />
+							<xsl:value-of select="notification_data/request/display/author"/>
+						</td>
+					</tr>
+					</xsl:if>
+					<tr>
+						<td>
+							<strong>@@arrival_date@@</strong>:<br />
+							<xsl:value-of select="notification_data/request/item_arrival_date"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>@@required_return_date@@</strong>:<br />
+							<xsl:value-of select="notification_data/request/due_date"/>
+						</td>
+					</tr>
+					<xsl:if test="notification_data/note_to_partner !=''">
+					<tr>
+						<td>
+							<strong>@@note_to_partner@@</strong>:<br />
+							<xsl:value-of select="notification_data/note_to_partner"/>
+						</td>
+					</tr>
+					</xsl:if>
+					<tr>
+						<td>
+						    <strong>Returned by</strong>:<br />
+						    <xsl:if test="substring(notification_data/organization_unit/description,0,4)!='CUNY'">
+						        CUNY
+						    </xsl:if>
+							<xsl:value-of select="notification_data/organization_unit/description"/>
+						</td>
+					</tr>
+					<tr>
+					    <td><hr /><p style="font-style:italic;">@@returned@@</p></td>
+					</tr>
+					<tr>
+					    <td><img src="https://cuny-network.alma.exlibrisgroup.com/infra/branding/logo/logo-main.png?institution=6121" style="max-width:33%;margin-top:25px;" /></td>
+					</tr>
+				</table>
+				<!--<xsl:call-template name="lastFooter"/>-->
+				<!-- footer.xsl -->
+				
+			</body>
+		</html>
+	</xsl:template>
+</xsl:stylesheet>
