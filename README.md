@@ -3,7 +3,7 @@
 This is a collection of XSL files used to generate letters and slips in Alma, as customized by the Office of Library Services at The City University of New York, on behalf of the University's 31 libraries across 26 campuses. These templates have been designed for consistency across the CUNY system.
 
 ## Overview
-The CUNY library system consists of 25 campuses serving over 270,000 patrons. These letter templates provide a unified user experience while accommodating the specific needs of each campus library.
+The CUNY library system consists of 26 campuses serving over 270,000 patrons. These letter templates provide a unified user experience while accommodating the specific needs of each campus library.
 
 ## Letter Usage Statistics
 Based on analysis from May 2025, our most frequently used fulfillment letters include:
