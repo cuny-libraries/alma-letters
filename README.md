@@ -12,7 +12,7 @@ Based on analysis from May 2025, our most frequently used fulfillment letters in
 |-|-|-|
 |Periodic Fulfillment Activity Report (BorrowingActivityLetter)|36,959|69.8%|
 |Courtesy Notices (CourtesyLetter)|11,082|20.9%|
-|Due Date Reminders (OverdueNoticeLetter)|4,11|17.8%|
+|Due Date Reminders (OverdueNoticeLetter)|4,111|7.8%|
 |Hold Shelf Reminders (OnHoldShelfReminderLetter)|767|1.4%|
 |**Total Fulfillment Letters**|**52,919**|**100%**|
 
