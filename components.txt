@@ -1,0 +1,8 @@
+# Components to export (one code per line)
+# These are the shared letter components (header, footer, styles, etc.)
+
+footer
+header
+mailReason
+senderReceiver
+style

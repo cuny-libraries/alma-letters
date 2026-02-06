@@ -1,0 +1,17 @@
+# Letters to export (one code per line)
+# These are the letters marked as "Customized" in the Alma UI
+
+FulReturnReceiptLetter
+ResendNotificationLetter
+FulUserOverdueNoticeLetter
+FulOnHoldShelfReminderLetter
+FulPlaceOnHoldShelfLetter
+FulItemChangeDueDateLetter
+FulLoanReceiptLetter
+LendingRecallEmailLetter
+FulOverdueAndLostLoanNotificationLetter
+FulOverdueAndLostLoanLetter
+FulCancelRequestLetter
+FineFeePaymentReceiptLetter
+FulUserLoansCourtesyLetter
+FulUserBorrowingActivityLetter
