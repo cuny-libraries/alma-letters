@@ -1,132 +1,19 @@
 # CUNY Libraries Alma Letters
 
-This is a collection of XSL files used to generate letters and slips in Alma, as customized by the Office of Library Services at The City University of New York, on behalf of the University's 31 libraries across 26 campuses. These templates have been designed for consistency across the CUNY system.
+Customized XSL letter templates for Ex Libris Alma, maintained by the Office of Library Services at The City University of New York.
 
-## Overview
+## About
 
-The CUNY library system consists of 26 campuses serving over 270,000 patrons. These letter templates provide a unified user experience while accommodating the specific needs of each campus library.
-
-## Export Tool
-
-This repository includes a Python tool to export customized letters from Alma via the Configuration API, making it easy to keep this repository in sync with Alma.
-
-### Setup
-
-1. Install with pipx:
-   ```bash
-   pipx install .
-   ```
-
-2. Create a `.env` file with your Alma API keys:
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your API keys
-   ```
-
-   The `.env` file supports separate keys for sandbox and production:
-   ```
-   ALMA_API_KEY_SANDBOX=your_sandbox_key
-   ALMA_API_KEY_PRODUCTION=your_production_key
-   ```
-
-   Your API keys need read/write access to the Configuration API (NA data center).
-
-### Usage
-
-#### Export (Download from Alma)
-
-Run the export command from this directory:
-
-```bash
-alma-letters
-```
-
-This will:
-- Fetch all letters and components from Alma
-- Filter to only those listed in `letters.txt` and `components.txt`
-- Download the XSL content for each
-- Save to `letters/` and `components/` directories
-
-#### Push (Upload to Alma)
-
-To push local changes back to Alma:
-
-```bash
-# Push to sandbox (for testing)
-alma-letters push --env sandbox
-
-# Push to production (requires confirmation)
-alma-letters push --env production
-```
-
-The push command will:
-- Read XSL files from `letters/` and `components/` directories
-- Upload each file listed in `letters.txt` and `components.txt` to Alma
-- For production, prompt for confirmation before proceeding
-
-#### Typical Workflow
-
-1. Make changes to XSL files locally
-2. Push to sandbox: `alma-letters push --env sandbox`
-3. Test the changes in Alma sandbox
-4. Once approved, push to production: `alma-letters push --env production`
-
-### Configuration Files
-
-- **`letters.txt`** - List of letter codes to export/push (one per line)
-- **`components.txt`** - List of component codes to export/push (one per line)
-
-To add a new letter to the export, add its code to the appropriate file. Comments (lines starting with `#`) are ignored.
-
-### Debug Mode
-
-To see all available letters and their status without exporting:
-
-```bash
-alma-letters --debug
-```
-
-### Help
-
-```bash
-alma-letters --help
-```
-
-## Letter Usage Statistics
-
-Based on analysis from May 2025, our most frequently used fulfillment letters include:
-
-| Letter Type | Volume | Percentage |
-|-------------|--------|------------|
-| Periodic Fulfillment Activity Report (BorrowingActivityLetter) | 36,959 | 69.8% |
-| Courtesy Notices (CourtesyLetter) | 11,082 | 20.9% |
-| Due Date Reminders (OverdueNoticeLetter) | 4,111 | 7.8% |
-| Hold Shelf Reminders (OnHoldShelfReminderLetter) | 767 | 1.4% |
-| **Total Fulfillment Letters** | **52,919** | **100%** |
-
-*Note: This data represents fulfillment letters only and does not include slips printed or notices sent in other areas such as acquisitions.*
-
-## Key Customizations
+CUNY's library system spans 26 campuses and serves over 270,000 patrons. These templates provide a consistent, accessible experience across all 31 CUNY libraries while accommodating campus-specific needs.
 
 ### Design Philosophy
 
-* Accessibility-first approach: High contrast mode support, semantic HTML, and clear typography
-* Mobile-responsive design: Templates work across all device types
-* User-centered messaging: Clear, helpful language that reduces library anxiety
+- **Accessibility-first**: High contrast support, semantic HTML, WCAG 2.1 AA compliant
+- **Mobile-responsive**: Templates work across all device types
+- **User-centered**: Clear language that reduces library anxiety
+- **Visual clarity**: Strategic use of emoji (📚, 🚚, ⚠️) for quick scanning
 
-### Major Features
-
-1. **Enhanced User Experience**
-   * Emoji integration for visual clarity (📚, 🚚, ⚠️)
-   * Conditional messaging based on item status and user type
-   * Streamlined information hierarchy
-
-2. **Accessibility Compliance**
-   * WCAG 2.1 AA compliant color contrasts
-   * Screen reader friendly markup
-   * Clear status indicators for overdue items
-
-## File Organization
+## Letters Included
 
 ### Components (Shared Templates)
 
@@ -138,41 +25,95 @@ Based on analysis from May 2025, our most frequently used fulfillment letters in
 | `mailReason.xsl` | Greeting templates |
 | `senderReceiver.xsl` | Sender/receiver information |
 
-### Letters
-
-#### Patron-Facing Letters
+### Patron Notices
 
 | File | Purpose |
 |------|---------|
 | `FulUserBorrowingActivityLetter.xsl` | Loan activity summaries |
 | `FulUserLoansCourtesyLetter.xsl` | Courtesy notices for approaching due dates |
-| `FulPlaceOnHoldShelfLetter.xsl` | Item ready for pickup notifications |
+| `FulPlaceOnHoldShelfLetter.xsl` | Item ready for pickup |
 | `FulOnHoldShelfReminderLetter.xsl` | Pickup reminders |
-| `FulUserOverdueNoticeLetter.xsl` | Overdue item notifications |
-| `FulCancelRequestLetter.xsl` | Request cancellation notices |
+| `FulUserOverdueNoticeLetter.xsl` | Overdue notifications |
+| `FulCancelRequestLetter.xsl` | Request cancellations |
 | `FulItemChangeDueDateLetter.xsl` | Due date changes and recalls |
 | `LendingRecallEmailLetter.xsl` | Recall notices |
+| `FulOverdueAndLostLoanLetter.xsl` | Lost item notices with fees |
+| `FulOverdueAndLostLoanNotificationLetter.xsl` | Initial lost item notifications |
+| `ResendNotificationLetter.xsl` | Resend previous notifications |
 
-#### Receipts
+### Receipts
 
 | File | Purpose |
 |------|---------|
 | `FulLoanReceiptLetter.xsl` | Checkout receipts |
 | `FulReturnReceiptLetter.xsl` | Return receipts |
-| `FineFeePaymentReceiptLetter.xsl` | Fine/fee payment receipts |
+| `FineFeePaymentReceiptLetter.xsl` | Payment receipts |
 
-#### Collections Letters
+## CLI Tool
 
-| File | Purpose |
-|------|---------|
-| `FulOverdueAndLostLoanLetter.xsl` | Lost item notices with fee information |
-| `FulOverdueAndLostLoanNotificationLetter.xsl` | Initial lost item notifications |
+This repository includes a command-line tool to sync letters between your local files and Alma via the Configuration API.
 
-#### Other
+### Installation
 
-| File | Purpose |
-|------|---------|
-| `ResendNotificationLetter.xsl` | Resend previous notifications |
+```bash
+pipx install .
+```
+
+### Configuration
+
+Create a `.env` file from the template:
+
+```bash
+cp .env.example .env
+```
+
+Add your API keys (read/write access to Configuration API required):
+
+```
+ALMA_API_KEY_SANDBOX=your_sandbox_key
+ALMA_API_KEY_PRODUCTION=your_production_key
+ALMA_REGION=na
+```
+
+Available regions: `na`, `eu`, `ap`, `aps`, `ca`, `cn`
+
+### Commands
+
+**Export letters from Alma:**
+```bash
+alma-letters
+```
+
+**Push changes to Alma:**
+```bash
+alma-letters push --env sandbox      # Test in sandbox first
+alma-letters push --env production   # Requires confirmation
+```
+
+**View available letters:**
+```bash
+alma-letters --debug
+```
+
+### Configuration Files
+
+- `letters.txt` — Letter codes to sync (one per line)
+- `components.txt` — Component codes to sync (one per line)
+
+Lines starting with `#` are comments.
+
+## Usage Statistics
+
+Based on May 2025 data, fulfillment letter volume:
+
+| Letter Type | Volume | Share |
+|-------------|--------|-------|
+| Borrowing Activity Report | 36,959 | 69.8% |
+| Courtesy Notices | 11,082 | 20.9% |
+| Overdue Notices | 4,111 | 7.8% |
+| Hold Shelf Reminders | 767 | 1.4% |
+
+*Fulfillment letters only; excludes acquisitions and other areas.*
 
 ## Roadmap
 
@@ -185,18 +126,18 @@ Based on analysis from May 2025, our most frequently used fulfillment letters in
 
 ### Ex Libris Documentation
 
-* [Using Templates to Update Letter Formatting and Content](https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/070Configuring_Alma_Letters#Using_Templates_to_Update_Letter_Formatting_and_Content)
-* [Letter List](https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/070Configuring_Alma_Letters#Letter_List)
-* [Automating Letter Exports](https://developers.exlibrisgroup.com/blog/automating-letter-and-code-table-exports-from-alma/)
-* [Alma Configuration API](https://developers.exlibrisgroup.com/alma/apis/conf/)
+- [Letter Customization Guide](https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/070Configuring_Alma_Letters#Using_Templates_to_Update_Letter_Formatting_and_Content)
+- [Letter List](https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/070Configuring_Alma_Letters#Letter_List)
+- [Automating Letter Exports](https://developers.exlibrisgroup.com/blog/automating-letter-and-code-table-exports-from-alma/)
+- [Configuration API](https://developers.exlibrisgroup.com/alma/apis/conf/)
 
-### Community Resources
+### Community
 
-* [University of Oslo Libraries Alma Letters Repository](https://github.com/uio-library/alma-letters-ubo) - Excellent reference implementation with detailed documentation
-* [Alma User Discussion List](https://exlibrisusers.org/postorius/lists/alma.exlibrisusers.org/)
+- [University of Oslo Alma Letters](https://github.com/uio-library/alma-letters-ubo) — Reference implementation
+- [Alma User Discussion List](https://exlibrisusers.org/postorius/lists/alma.exlibrisusers.org/)
 
-### Technical References
+### Technical
 
-* [XSLT 1.0 Specification](https://www.w3.org/TR/xslt-10/)
-* [HTML Email Best Practices](https://www.campaignmonitor.com/css/) - CSS support across email clients
-* [Web Content Accessibility Guidelines (WCAG) 2.1](https://www.w3.org/WAI/WCAG21/quickref/)
+- [XSLT 1.0 Specification](https://www.w3.org/TR/xslt-10/)
+- [HTML Email CSS Support](https://www.campaignmonitor.com/css/)
+- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
