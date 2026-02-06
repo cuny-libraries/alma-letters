@@ -174,6 +174,13 @@ Based on analysis from May 2025, our most frequently used fulfillment letters in
 |------|---------|
 | `ResendNotificationLetter.xsl` | Resend previous notifications |
 
+## Roadmap
+
+- [ ] GitHub Actions workflow for automated syncing
+- [ ] Selective push (specific letters only)
+- [ ] XSL validation before pushing
+- [ ] Letter preview/testing tool
+
 ## Resources
 
 ### Ex Libris Documentation
