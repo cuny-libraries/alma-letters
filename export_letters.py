@@ -13,7 +13,15 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-BASE_URL = "https://api-na.hosted.exlibrisgroup.com/almaws/v1"
+# API base URLs by region
+REGION_URLS = {
+    "na": "https://api-na.hosted.exlibrisgroup.com",
+    "eu": "https://api-eu.hosted.exlibrisgroup.com",
+    "ap": "https://api-ap.hosted.exlibrisgroup.com",
+    "aps": "https://api-aps.hosted.exlibrisgroup.com",
+    "ca": "https://api-ca.hosted.exlibrisgroup.com",
+    "cn": "https://api-cn.hosted.exlibrisgroup.com.cn",
+}
 
 # Output directories (relative to current working directory)
 LETTERS_DIR = Path("letters")
@@ -21,6 +29,7 @@ COMPONENTS_DIR = Path("components")
 
 # Will be set in main()
 API_KEY = None
+BASE_URL = None
 
 
 def get_headers(content_type="json"):
@@ -314,6 +323,21 @@ def debug_letters(letter_type="LETTER"):
             print(f"  {letter.get('code')} - {letter.get('name')}")
 
 
+def get_base_url():
+    """
+    Get the API base URL for the configured region.
+
+    Returns:
+        Base URL string
+    """
+    region = os.getenv("ALMA_REGION", "na").lower()
+    if region not in REGION_URLS:
+        print(f"Error: Unknown ALMA_REGION '{region}'")
+        print(f"Valid regions: {', '.join(REGION_URLS.keys())}")
+        sys.exit(1)
+    return f"{REGION_URLS[region]}/almaws/v1"
+
+
 def get_api_key(env_name=None):
     """
     Get the API key for the specified environment.
@@ -362,11 +386,14 @@ def print_usage():
 
 
 def main():
-    global API_KEY
+    global API_KEY, BASE_URL
 
     # Load .env from current working directory
     env_path = Path.cwd() / ".env"
     load_dotenv(env_path)
+
+    # Set base URL from region
+    BASE_URL = get_base_url()
 
     # Parse command line arguments
     args = sys.argv[1:]
