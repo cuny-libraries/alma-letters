@@ -17,14 +17,23 @@ This repository includes a Python tool to export customized letters from Alma vi
    pipx install .
    ```
 
-2. Create a `.env` file with your Alma API key:
+2. Create a `.env` file with your Alma API keys:
    ```bash
    cp .env.example .env
-   # Edit .env and add your API key
+   # Edit .env and add your API keys
    ```
-   Your API key needs read access to the Configuration API (NA data center).
+
+   The `.env` file supports separate keys for sandbox and production:
+   ```
+   ALMA_API_KEY_SANDBOX=your_sandbox_key
+   ALMA_API_KEY_PRODUCTION=your_production_key
+   ```
+
+   Your API keys need read/write access to the Configuration API (NA data center).
 
 ### Usage
+
+#### Export (Download from Alma)
 
 Run the export command from this directory:
 
@@ -38,10 +47,34 @@ This will:
 - Download the XSL content for each
 - Save to `letters/` and `components/` directories
 
+#### Push (Upload to Alma)
+
+To push local changes back to Alma:
+
+```bash
+# Push to sandbox (for testing)
+alma-letters push --env sandbox
+
+# Push to production (requires confirmation)
+alma-letters push --env production
+```
+
+The push command will:
+- Read XSL files from `letters/` and `components/` directories
+- Upload each file listed in `letters.txt` and `components.txt` to Alma
+- For production, prompt for confirmation before proceeding
+
+#### Typical Workflow
+
+1. Make changes to XSL files locally
+2. Push to sandbox: `alma-letters push --env sandbox`
+3. Test the changes in Alma sandbox
+4. Once approved, push to production: `alma-letters push --env production`
+
 ### Configuration Files
 
-- **`letters.txt`** - List of letter codes to export (one per line)
-- **`components.txt`** - List of component codes to export (one per line)
+- **`letters.txt`** - List of letter codes to export/push (one per line)
+- **`components.txt`** - List of component codes to export/push (one per line)
 
 To add a new letter to the export, add its code to the appropriate file. Comments (lines starting with `#`) are ignored.
 
@@ -51,6 +84,12 @@ To see all available letters and their status without exporting:
 
 ```bash
 alma-letters --debug
+```
+
+### Help
+
+```bash
+alma-letters --help
 ```
 
 ## Letter Usage Statistics

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Export customized Alma letters and components via the Configuration API.
+Export and push Alma letters and components via the Configuration API.
 
 Downloads XSL templates for letters and components that have been modified
-from their defaults (identified by having an update_date).
+from their defaults, and can push local changes back to Alma.
 """
 
 import os
@@ -23,12 +23,15 @@ COMPONENTS_DIR = Path("components")
 API_KEY = None
 
 
-def get_headers():
+def get_headers(content_type="json"):
     """Return headers for API requests."""
-    return {
+    headers = {
         "Authorization": f"apikey {API_KEY}",
-        "Accept": "application/json",
     }
+    if content_type == "json":
+        headers["Accept"] = "application/json"
+        headers["Content-Type"] = "application/json"
+    return headers
 
 
 def fetch_letter_list(letter_type="LETTER"):
@@ -67,6 +70,31 @@ def fetch_letter_detail(letter_code):
     response.raise_for_status()
 
     return response.json()
+
+
+def push_letter(letter_code, xsl_content):
+    """
+    Push XSL content for a letter back to Alma.
+
+    Args:
+        letter_code: The unique code identifying the letter.
+        xsl_content: The XSL template content to upload.
+
+    Returns:
+        True if successful, raises exception otherwise.
+    """
+    # First fetch the current letter to get its full structure
+    url = f"{BASE_URL}/conf/letters/{letter_code}"
+
+    current = fetch_letter_detail(letter_code)
+
+    # Update only the XSL content
+    current["xsl"] = xsl_content
+
+    response = requests.put(url, headers=get_headers(), json=current)
+    response.raise_for_status()
+
+    return True
 
 
 def load_letter_list(filename):
@@ -185,6 +213,57 @@ def export_letters(letter_type, output_dir):
     return exported
 
 
+def push_letters(letter_type, source_dir):
+    """
+    Push all letters/components of the given type from local files to Alma.
+
+    Args:
+        letter_type: "LETTER" or "COMPONENT"
+        source_dir: Directory containing XSL files.
+
+    Returns:
+        List of pushed letter codes.
+    """
+    if not source_dir.exists():
+        print(f"  Directory not found: {source_dir}")
+        return []
+
+    # Load the list of letters to push
+    list_file = "letters.txt" if letter_type == "LETTER" else "components.txt"
+    explicit_codes = load_letter_list(list_file)
+
+    if not explicit_codes:
+        print(f"  No {list_file} found, skipping {letter_type.lower()}s")
+        return []
+
+    print(f"\nPushing {letter_type.lower()}s...")
+    print(f"  {len(explicit_codes)} to push from {list_file}")
+
+    pushed = []
+    for code in explicit_codes:
+        # Handle component codes (may or may not have .xsl)
+        filename = code if code.endswith(".xsl") else f"{code}.xsl"
+        file_path = source_dir / filename
+
+        if not file_path.exists():
+            print(f"  Skipping: {code} (file not found: {filename})")
+            continue
+
+        # For components, the API code includes .xsl
+        api_code = filename if letter_type == "COMPONENT" else code
+
+        print(f"  Uploading: {api_code}")
+        xsl_content = file_path.read_text(encoding="utf-8")
+
+        try:
+            push_letter(api_code, xsl_content)
+            pushed.append(api_code)
+        except requests.exceptions.HTTPError as e:
+            print(f"    Error: {e}")
+
+    return pushed
+
+
 def debug_letters(letter_type="LETTER"):
     """Print details about letters to help identify filtering criteria."""
     print(f"Fetching {letter_type.lower()} list for debugging...")
@@ -235,25 +314,124 @@ def debug_letters(letter_type="LETTER"):
             print(f"  {letter.get('code')} - {letter.get('name')}")
 
 
+def get_api_key(env_name=None):
+    """
+    Get the API key for the specified environment.
+
+    Args:
+        env_name: "sandbox", "production", or None for legacy key
+
+    Returns:
+        API key string
+    """
+    if env_name == "sandbox":
+        key = os.getenv("ALMA_API_KEY_SANDBOX")
+        if not key:
+            print("Error: ALMA_API_KEY_SANDBOX not set in .env")
+            sys.exit(1)
+        return key
+    elif env_name == "production":
+        key = os.getenv("ALMA_API_KEY_PRODUCTION")
+        if not key:
+            print("Error: ALMA_API_KEY_PRODUCTION not set in .env")
+            sys.exit(1)
+        return key
+    else:
+        # Legacy: check for single key or sandbox key
+        key = os.getenv("ALMA_API_KEY") or os.getenv("ALMA_API_KEY_SANDBOX")
+        if not key:
+            print("Error: No API key found. Set ALMA_API_KEY_SANDBOX in .env")
+            sys.exit(1)
+        return key
+
+
+def print_usage():
+    """Print usage information."""
+    print("Usage: alma-letters [command] [options]")
+    print()
+    print("Commands:")
+    print("  (none)              Export letters from Alma to local files")
+    print("  push --env ENV      Push local files to Alma (ENV: sandbox or production)")
+    print("  --debug             Show all available letters and their status")
+    print()
+    print("Examples:")
+    print("  alma-letters                    # Export from Alma")
+    print("  alma-letters push --env sandbox # Push to sandbox")
+    print("  alma-letters push --env production # Push to production (requires confirmation)")
+    print("  alma-letters --debug            # Debug mode")
+
+
 def main():
     global API_KEY
 
     # Load .env from current working directory
     env_path = Path.cwd() / ".env"
     load_dotenv(env_path)
-    API_KEY = os.getenv("ALMA_API_KEY")
 
-    if not API_KEY:
-        print("Error: ALMA_API_KEY environment variable not set.")
-        print("Copy .env.example to .env and add your API key.")
-        sys.exit(1)
+    # Parse command line arguments
+    args = sys.argv[1:]
 
-    # Check for debug mode
-    if len(sys.argv) > 1 and sys.argv[1] == "--debug":
+    # Handle --help
+    if "--help" in args or "-h" in args:
+        print_usage()
+        return
+
+    # Handle --debug
+    if "--debug" in args:
+        API_KEY = get_api_key()
         debug_letters("LETTER")
         print()
         debug_letters("COMPONENT")
         return
+
+    # Handle push command
+    if args and args[0] == "push":
+        # Parse --env argument
+        env_name = None
+        if "--env" in args:
+            env_idx = args.index("--env")
+            if env_idx + 1 < len(args):
+                env_name = args[env_idx + 1].lower()
+
+        if env_name not in ("sandbox", "production"):
+            print("Error: push requires --env sandbox or --env production")
+            print()
+            print_usage()
+            sys.exit(1)
+
+        # Confirmation for production
+        if env_name == "production":
+            print("=" * 50)
+            print("WARNING: You are about to push to PRODUCTION")
+            print("=" * 50)
+            print()
+            response = input("Type 'yes' to confirm: ")
+            if response.lower() != "yes":
+                print("Aborted.")
+                sys.exit(0)
+            print()
+
+        API_KEY = get_api_key(env_name)
+
+        print(f"Alma Letter Push ({env_name.upper()})")
+        print("=" * 40)
+
+        # Push letters
+        letters = push_letters("LETTER", LETTERS_DIR)
+
+        # Push components
+        components = push_letters("COMPONENT", COMPONENTS_DIR)
+
+        # Summary
+        print("\n" + "=" * 40)
+        print("Push complete!")
+        print(f"  Letters pushed: {len(letters)}")
+        print(f"  Components pushed: {len(components)}")
+
+        return
+
+    # Default: export
+    API_KEY = get_api_key()
 
     print("Alma Letter Export")
     print("=" * 40)
