@@ -5,7 +5,17 @@
 	<!-- Get the contact email for the campus, overriding for schools whose
 	     xx-circ@library.cuny.edu aliases don't actually work -->
 	<xsl:template name="getCampusContactEmail">
-		<xsl:variable name="campusCode" select="substring(notification_data/organization_unit/code, 1, 2)" />
+		<xsl:variable name="rawCode" select="notification_data/organization_unit/code" />
+		<xsl:variable name="campusCode">
+			<xsl:choose>
+				<xsl:when test="starts-with($rawCode, '0')">
+					<xsl:value-of select="substring($rawCode, string-length($rawCode) - 1)" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="substring($rawCode, 1, 2)" />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$campusCode = 'JJ'">jjlibcirc@jjay.cuny.edu</xsl:when>
 			<xsl:when test="$campusCode = 'BM'">help@bmcc-cuny.libanswers.com</xsl:when>
