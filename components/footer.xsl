@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+	<!-- Get the contact email for the campus, overriding for schools whose
+	     xx-circ@library.cuny.edu aliases don't actually work -->
+	<xsl:template name="getCampusContactEmail">
+		<xsl:variable name="campusCode" select="substring(notification_data/organization_unit/code, 1, 2)" />
+		<xsl:choose>
+			<xsl:when test="$campusCode = 'JJ'">jjlibcirc@jjay.cuny.edu</xsl:when>
+			<xsl:when test="$campusCode = 'BM'">help@bmcc-cuny.libanswers.com</xsl:when>
+			<xsl:when test="$campusCode = 'QB'">askqccref@cuny.libanswers.com</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="notification_data/organization_unit/email/email"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
     <xsl:template name="managingYourLoans">
 		<div class="action-section">
 			<h2 class="section-title">Managing Your Loans</h2>
@@ -13,13 +28,14 @@
 	<xsl:template name="lastFooter">
 		<div class="footer-info">
 			<h2>Questions? We're here to help!</h2>
-			<p>Contact the library by emailing us at 
+			<xsl:variable name="contactEmail">
+				<xsl:call-template name="getCampusContactEmail"/>
+			</xsl:variable>
+			<p>Contact the library by emailing us at
 				<a>
-					<xsl:attribute name="href">mailto:
-						<xsl:value-of select="notification_data/organization_unit/email/email"/>
-					</xsl:attribute>
-					<xsl:value-of select="notification_data/organization_unit/email/email"/>
-				</a> or calling us at 
+					<xsl:attribute name="href">mailto:<xsl:value-of select="$contactEmail"/></xsl:attribute>
+					<xsl:value-of select="$contactEmail"/>
+				</a> or calling us at
 				<xsl:value-of select="notification_data/organization_unit/phone/phone"/> for assistance with your account or materials.
 			</p>
 		</div>
@@ -42,12 +58,13 @@
                         📞 
 							<xsl:value-of select="notification_data/organization_unit/phone/phone"/>
 							<br/>
-                        ✉️ 
+                        ✉️
+							<xsl:variable name="footerContactEmail">
+								<xsl:call-template name="getCampusContactEmail"/>
+							</xsl:variable>
 							<a>
-								<xsl:attribute name="href">mailto:
-									<xsl:value-of select="notification_data/organization_unit/email/email"/>
-								</xsl:attribute>
-								<xsl:value-of select="notification_data/organization_unit/email/email"/>
+								<xsl:attribute name="href">mailto:<xsl:value-of select="$footerContactEmail"/></xsl:attribute>
+								<xsl:value-of select="$footerContactEmail"/>
 							</a>
 						</p>
 					</td>
